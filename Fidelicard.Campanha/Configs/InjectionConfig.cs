@@ -1,4 +1,5 @@
 ﻿using Fidelicard.Campanha.Core.Interface;
+using Fidelicard.Campanha.Core.Mock;
 using Fidelicard.Campanha.Core.Service;
 using Fidelicard.Campanha.Infra.Config;
 using Fidelicard.Campanha.Infra.EntityMapping.AutoMapper;
@@ -15,8 +16,10 @@ namespace Fidelicard.Campanha.Configs
 
             services.AddTransient<IDatabaseContext, DatabaseContext>();
             services.AddTransient<ICampanhaRepository, CampanhaRepository>();
-
             services.AddTransient<ICampanhaService, CampanhaService>();
+
+            services.AddTransient<IMockCampanhaRepository, MockCampanhaRepository>();
+            services.AddTransient<IMockCampanhaService, MockCampanhaService>();
 
             services.AddAutoMapper((serviceProvider, automapper) =>
             {

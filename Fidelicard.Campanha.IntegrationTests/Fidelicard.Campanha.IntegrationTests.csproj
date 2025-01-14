@@ -17,6 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fidelicard.Campanha.Core\Fidelicard.Campanha.Core.csproj" />
+    <ProjectReference Include="..\Fidelicard.Campanha.Infra\Fidelicard.Campanha.Infra.csproj" />
+    <ProjectReference Include="..\Fidelicard.Campanha\Fidelicard.Campanha.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
