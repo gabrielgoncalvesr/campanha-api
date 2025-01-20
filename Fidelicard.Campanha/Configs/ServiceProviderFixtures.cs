@@ -1,7 +1,6 @@
 ﻿using Fidelicard.Campanha.Core.Interface;
+using Fidelicard.Campanha.Core.Repository;
 using Fidelicard.Campanha.Core.Service;
-using Fidelicard.Campanha.Infra.Config;
-using Fidelicard.Campanha.Infra.Repository;
 
 namespace Fidelicard.Campanha.Configs
 {
@@ -23,7 +22,7 @@ namespace Fidelicard.Campanha.Configs
             services.AddSingleton<IConfiguration>(configuration);
 
             // Registrar os serviços e repositórios
-            services.AddScoped<IDatabaseContext, DatabaseContext>();
+            //services.AddScoped<IDatabaseContext, DatabaseContext>();
             services.AddScoped<ICampanhaRepository, CampanhaRepository>();
             services.AddScoped<ICampanhaService, CampanhaService>();
 

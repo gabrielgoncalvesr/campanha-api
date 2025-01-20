@@ -1,16 +1,14 @@
-﻿using Fidelicard.Campanha.Core.Models;
-using Fidelicard.Campanha.Core.Result;
-using System.Data;
+using Fidelicard.Campanha.Core.Models;
 
 namespace Fidelicard.Campanha.Core.Interface
 {
     public interface ICampanhaRepository
     {
-        Task<CampanhaResult> ObterCampanhaAsync(int idCampanha);
-        Task<IEnumerable<Campanhas>> ObterCampanhasPorPeriodoAsync(DateTime dataInicio, DateTime dataFim);
-        Task<int> CadastrarCampanhaAsync(Campanhas campanha);
-        Task<int> AtualizarCampanhaAsync(Campanhas campanha);
-
-        IDbConnection GetConnection();
+        Task<Campanhas> ObterPorIdAsync(int id);
+        Task<IEnumerable<Campanhas>> ListarAsync();
+        Task<IEnumerable<Campanhas>> ListarAtivasAsync();
+        Task<int> CadastrarAsync(Campanhas campanha);
+        Task<bool> AtualizarAsync(Campanhas campanha);
+        Task<bool> ExcluirAsync(int id);
     }
 }

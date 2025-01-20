@@ -1,4 +1,4 @@
-﻿using Fidelicard.Campanha.Core.Interface;
+using Fidelicard.Campanha.Core.Interface;
 using Fidelicard.Campanha.Core.Models;
 using Fidelicard.Campanha.Core.Result;
 using Microsoft.Extensions.Logging;
@@ -11,10 +11,10 @@ namespace Fidelicard.Campanha.Core.Service
         private readonly ILogger<CampanhaService> _logger;
 
         public CampanhaService(ILogger<CampanhaService> logger
-        , ICampanhaRepository usuarioRepository)
+        , ICampanhaRepository campanhaRepository)
         {
             _logger = logger;
-            _campanhaRepository = usuarioRepository;
+            _campanhaRepository = campanhaRepository;
         }
         public async Task<CampanhaResult> ConsultarCampanhaAsync(int idCampanha)
         {
@@ -22,9 +22,9 @@ namespace Fidelicard.Campanha.Core.Service
 
             try
             {
-                var usuario = await _campanhaRepository.ObterCampanhaAsync(idCampanha).ConfigureAwait(false);
+                var campanha = await _campanhaRepository.ObterPorIdAsync(idCampanha).ConfigureAwait(false);
 
-                if (usuario == null)
+                if (campanha == null)
                 {
                     var mensagem = $"Campanha inexistente pelo código informado: {idCampanha}";
                     _logger.LogWarning(mensagem);
@@ -32,7 +32,7 @@ namespace Fidelicard.Campanha.Core.Service
                 }
 
                 _logger.LogInformation("Consulta do usuário com Id: {IdCampanha} concluída com sucesso.", idCampanha);
-                return CampanhaResult.SucessoObterUsuario(usuario.Campanha);
+                return CampanhaResult.SucessoObterUsuario(campanha);
             }
             catch (Exception ex)
             {
@@ -48,8 +48,8 @@ namespace Fidelicard.Campanha.Core.Service
 
             try
             {
-                // Consulta as campanhas no repositório
-                var campanhas = await _campanhaRepository.ObterCampanhasPorPeriodoAsync(dataInicio, dataFim).ConfigureAwait(false);
+                var campanhas = await _campanhaRepository.ListarAsync().ConfigureAwait(false);
+                campanhas = campanhas.Where(c => c.DataInicio >= dataInicio && c.DataFim <= dataFim);
 
                 if (campanhas == null || !campanhas.Any())
                 {
@@ -69,14 +69,13 @@ namespace Fidelicard.Campanha.Core.Service
             }
         }
 
-
         public async Task<int> CadastrarCampanhaAsync(Campanhas campanha)
         {
             _logger.LogInformation("Iniciando cadastro de campanha: {CampanhaNome}", campanha?.Nome);
 
             try
             {
-                var result = await _campanhaRepository.CadastrarCampanhaAsync(campanha).ConfigureAwait(false);
+                var result = await _campanhaRepository.CadastrarAsync(campanha).ConfigureAwait(false);
 
                 _logger.LogInformation("Campanha cadastrada com sucesso. Id gerado: {CampanhaId}", result);
                 return result;
@@ -95,10 +94,10 @@ namespace Fidelicard.Campanha.Core.Service
 
             try
             {
-                var result = await _campanhaRepository.AtualizarCampanhaAsync(campanha).ConfigureAwait(false);
+                var result = await _campanhaRepository.AtualizarAsync(campanha).ConfigureAwait(false);
 
-                _logger.LogInformation("Campanha atualizado com sucesso. Id gerado: {CampanhaId}", result);
-                return result;
+                _logger.LogInformation("Campanha atualizado com sucesso. Id gerado: {CampanhaId}", result ? 1 : 0);
+                return result ? 1 : 0;
             }
             catch (Exception ex)
             {

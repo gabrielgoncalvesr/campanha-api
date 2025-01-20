@@ -1,40 +1,54 @@
-﻿using Fidelicard.Campanha.Core.Interface;
+using Fidelicard.Campanha.Core.Interface;
+using Fidelicard.Campanha.Core.Repository;
 using Fidelicard.Campanha.Core.Service;
 using Fidelicard.Campanha.Infra.Config;
 using Fidelicard.Campanha.Infra.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-public class ServiceProviderFixture : IDisposable
+namespace Fidelicard.Campanha.IntegrationTests
 {
-    public ServiceProvider ServiceProvider { get; }
-
-    public ServiceProviderFixture()
+    public class ServiceProviderFixture : IDisposable
     {
-        var services = new ServiceCollection();
+        public ServiceProvider ServiceProvider { get; }
 
-        // Criar uma configuração fake para testes
-        var inMemorySettings = new Dictionary<string, string>
+        public ServiceProviderFixture()
         {
-            { "ConnectionStrings:DBCampanha", "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=TestDb;Integrated Security=True;" }
-        };
-        var configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
+            var services = new ServiceCollection();
 
-        // Registrar o IConfiguration no DI
-        services.AddSingleton<IConfiguration>(configuration);
+            // Configurar logging
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
 
-        // Registrar os serviços e repositórios
-        services.AddScoped<IDatabaseContext, DatabaseContext>();
-        services.AddScoped<ICampanhaRepository, CampanhaRepository>();
-        services.AddScoped<ICampanhaService, CampanhaService>();
+            // Criar uma configuração fake para testes
+            var inMemorySettings = new Dictionary<string, string>
+            {
+                { "ConnectionStrings:DBCampanha", "Server=(localdb)\\mssqllocaldb;Database=FidelicardCampanhaTests;Trusted_Connection=True;MultipleActiveResultSets=true" }
+            };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
 
-        ServiceProvider = services.BuildServiceProvider();
-    }
+            // Registrar o IConfiguration no DI
+            services.AddSingleton<IConfiguration>(configuration);
 
-    public void Dispose()
-    {
-        // Liberar recursos, se necessário
+            // Registrar os serviços e repositórios
+            services.AddScoped<IDatabaseContext, DatabaseContext>();
+            services.AddScoped<ICampanhaService, CampanhaService>();
+            services.AddScoped<ICampanhaRepository>(sp => new MockCampanhaRepository());
+
+            ServiceProvider = services.BuildServiceProvider();
+        }
+
+        public void Dispose()
+        {
+            // Liberar recursos, se necessário
+            ServiceProvider?.Dispose();
+        }
     }
 }

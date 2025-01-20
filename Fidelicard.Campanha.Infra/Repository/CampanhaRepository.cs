@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Dapper;
 using Fidelicard.Campanha.Core.Interface;
 using Fidelicard.Campanha.Core.Models;
@@ -416,3 +416,4 @@ namespace Fidelicard.Campanha.Infra.Repository
 
     }
 }
+*/

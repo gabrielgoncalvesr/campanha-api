@@ -1,4 +1,4 @@
-﻿using Fidelicard.Campanha.Core.Models;
+using Fidelicard.Campanha.Core.Models;
 using Fidelicard.Campanha.Core.Result;
 
 namespace Fidelicard.Campanha.Core.Interface

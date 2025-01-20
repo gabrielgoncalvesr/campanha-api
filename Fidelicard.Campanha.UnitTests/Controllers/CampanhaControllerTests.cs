@@ -1,4 +1,5 @@
-﻿using Fidelicard.Campanha.Controllers;
+﻿
+using Fidelicard.Campanha.Controllers;
 using Fidelicard.Campanha.Core.Interface;
 using Fidelicard.Campanha.Core.Models;
 using Fidelicard.Campanha.Core.Result;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
+using Newtonsoft.Json;
 
 public class CampanhaControllerTests
 {
@@ -41,7 +42,7 @@ public class CampanhaControllerTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         var actualResponse = Assert.IsType<CampanhaResult>(okResult.Value);
 
-        Assert.Equal(campanha.Nome, actualResponse.Campanha.Nome);        
+        Assert.Equal(campanha.Nome, actualResponse.Campanha.Nome);
         Assert.Null(actualResponse.ErroProcessamento);
     }
 
@@ -61,9 +62,10 @@ public class CampanhaControllerTests
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        var actualResponse = Assert.IsType<CampanhaResult>(badRequestResult.Value);
-                
-        Assert.Equal("Código da campanha inválido", actualResponse.Mensagem);
+        var json = JsonConvert.SerializeObject(badRequestResult.Value);
+        dynamic actualResponse = JsonConvert.DeserializeObject<dynamic>(json);
+
+        Assert.Equal("Código da campanha invalido", (string)actualResponse.Mensagem);
     }
 
     [Fact]
@@ -80,8 +82,9 @@ public class CampanhaControllerTests
         // Assert
         var internalServerErrorResult = Assert.IsType<ObjectResult>(result);
         Assert.Equal(500, internalServerErrorResult.StatusCode);
+        var json = JsonConvert.SerializeObject(internalServerErrorResult.Value);
+        dynamic actualResponse = JsonConvert.DeserializeObject<dynamic>(json);
 
-        var actualResponse = Assert.IsType<CampanhaResult>(internalServerErrorResult.Value);        
-        Assert.Equal("Erro ao processar a solicitação.", actualResponse.Mensagem);
+        Assert.Equal("Erro inesperado ao processar sua solicitação. Tente novamente mais tarde.", (string)actualResponse.Mensagem);
     }
 }

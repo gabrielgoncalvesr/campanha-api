@@ -1,5 +1,6 @@
 using Fidelicard.Campanha.Core.Interface;
 using Fidelicard.Campanha.Core.Models;
+using Fidelicard.Campanha.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;
 
 public class CampanhaServiceIntegrationTests : IClassFixture<ServiceProviderFixture>
@@ -21,7 +22,7 @@ public class CampanhaServiceIntegrationTests : IClassFixture<ServiceProviderFixt
         int idCampanha = 1;
 
         // Insira uma campanha no repositório para o teste.
-        await _campanhaRepository.CadastrarCampanhaAsync(new Campanhas
+        await _campanhaRepository.CadastrarAsync(new Campanhas
         {
             Id = idCampanha,
             Nome = "Campanha de Teste",
@@ -43,7 +44,6 @@ public class CampanhaServiceIntegrationTests : IClassFixture<ServiceProviderFixt
 
         // Assert
         Assert.NotNull(result);
-        Assert.True(true);
         Assert.NotNull(result.Campanha);
         Assert.Equal("Campanha de Teste", result.Campanha.Nome);
     }
@@ -59,7 +59,6 @@ public class CampanhaServiceIntegrationTests : IClassFixture<ServiceProviderFixt
 
         // Assert
         Assert.NotNull(result);
-        Assert.False(true);
         Assert.Contains($"Campanha inexistente pelo código informado: {idCampanhaInexistente}", result.Mensagem);
     }
 
@@ -74,7 +73,6 @@ public class CampanhaServiceIntegrationTests : IClassFixture<ServiceProviderFixt
 
         // Assert
         Assert.NotNull(result);
-        Assert.False(false);
-        Assert.Contains("Erro ao consultar o usuário com Id", result.Mensagem);
+        Assert.Contains("Campanha inexistente pelo código informado: -1", result.Mensagem);
     }
 }

@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fidelicard.Campanha.Core\Fidelicard.Campanha.Core.csproj" />
-    <ProjectReference Include="..\Fidelicard.Campanha.Infra\Fidelicard.Campanha.Infra.csproj" />
   </ItemGroup>
 
 </Project>
